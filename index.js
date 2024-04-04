@@ -73,14 +73,33 @@ function storeOrderDetails(db,req){
 // Route to get all users
 app.get('/books', (req, res) => {
   const db = connectDB();
-  db.all('SELECT * FROM Books', (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json({ data: rows });
-  });
+  const parameter = req.query.parameter;
+  const pattern = req.query.pattern;
+  let dbquery;
+  if (pattern===''){
+    dbquery=`SELECT * FROM Books ORDER BY ${parameter}`
+    db.all(`SELECT * FROM Books ORDER BY ${parameter}`, (err, rows) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ data: rows });
+    });
+  }else{
+    dbquery = `SELECT * FROM Books WHERE ${parameter} LIKE "%${pattern}% ORDER BY INSTR(${parameter},"${pattern}")`
+    db.all(`SELECT * FROM Books WHERE ${parameter} LIKE "%${pattern}% ORDER BY INSTR(${parameter},"${pattern}")`, (err, rows) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ data: rows });
+    });
+  }
+  console.log(dbquery);
   closeDB(db);
 });
+
+//select * from Books where author Like "%an%" order by INSTR(author, "an");
 
 // Route to get a specific user by ID
 app.get('/productinfo/:id', (req, res) => {
