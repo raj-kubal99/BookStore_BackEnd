@@ -87,7 +87,7 @@ app.get('/books', (req, res) => {
     });
   }else{
     dbquery = `SELECT * FROM Books WHERE ${parameter} LIKE "%${pattern}% ORDER BY INSTR(${parameter},"${pattern}")`
-    db.all(`SELECT * FROM Books WHERE ${parameter} LIKE "%${pattern}% ORDER BY INSTR(${parameter},"${pattern}")`, (err, rows) => {
+    db.all(`SELECT * FROM Books WHERE ${parameter} LIKE "%${pattern}%" ORDER BY INSTR(${parameter},"${pattern}")`, (err, rows) => {
       if (err) {
         console.log(err);
         return res.status(500).json({ error: err.message });
